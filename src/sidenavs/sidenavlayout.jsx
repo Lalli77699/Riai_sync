@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaTachometerAlt, FaComments, FaAddressBook, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaTachometerAlt, FaComments, FaAddressBook, FaUser, FaSignOutAlt, FaCalendarAlt, FaFileAlt } from "react-icons/fa";
 
 const menuItems = [
   { name: "Feed", icon: <FaHome /> },
   { name: "Dashboard", icon: <FaTachometerAlt /> },
   { name: "Messenger", icon: <FaComments /> },
+  { name: "Calendar", icon: <FaCalendarAlt /> },
+  { name: "Documents", icon: <FaFileAlt /> },
   { name: "Contact Us", icon: <FaAddressBook /> },
   { name: "Profile", icon: <FaUser /> },
   { name: "Logout", icon: <FaSignOutAlt /> },
@@ -16,9 +18,9 @@ const SidenavLayout = ({ children }) => {
 
   return (
     <div className="flex">
-      {/* Sidebar */}
+    
       <div
-        className={`h-screen bg-gray-800 text-white p-4 transition-all duration-300 ${isOpen ? "w-60" : "w-16"}`}
+        className={`h-screen bg-gray-800 text-white p-4 rounded-l-lg rounded-r-lg transition-all duration-300 ${isOpen ? "w-60" : "w-16"}`}
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
       >
@@ -36,7 +38,7 @@ const SidenavLayout = ({ children }) => {
         </div>
       </div>
 
-      {/* Main Content */}
+      
       <main className={`flex-grow p-5 transition-all duration-300 ${isOpen ? "ml-0" : "ml-0"}`}>{children}</main>
     </div>
   );

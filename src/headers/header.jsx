@@ -1,16 +1,16 @@
 import { FaBars, FaUserCircle, FaBell } from "react-icons/fa";
+import reactLogo from './react.png';
 
 const Header = () => {
   return (
-    <header className="w-full bg-gradient-to-r from-blue-600 to-blue-400 shadow-md flex items-center justify-between px-6 py-4 z-50 rounded-xl">
+    <header className="w-full bg-gradient-to-r from-indigo-700 to-purple-500 shadow-lg flex items-center justify-between px-6 py-4 z-50 rounded-xl border-b-4 border-indigo-900">
       {/* Logo Section */}
       <div className="flex items-center space-x-3">
         <img
-          src="https://www.riaisolutions.com/wp-content/uploads/2020/10/RiAiSolutions_Logo_304x91.png"
-          alt="RiAi Solutions Logo"
-          className="h-10"
+          src={reactLogo}
+          className="h-8"
         />
-
+        <span className="text-white text-lg font-semibold">RIAI Sync</span>
       </div>
 
       {/* Icons Section */}
