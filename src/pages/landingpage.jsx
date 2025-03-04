@@ -1,13 +1,21 @@
 import React from "react";
 import { Button } from "@mui/material";
+import  SidenavLayout  from "sidenavs/sidenavlayout";
 
 const Landing = () => {
   return (
     <>
-      <h1>PRIYAAAAAAAAA</h1>
+    <SidenavLayout>   
+      
+         <h1>PRIYAAAAAAAAA</h1>
       <Button variant="contained" color="primary">
         Click Me
       </Button>
+
+
+
+      </SidenavLayout>
+
     </>
   );
 };
