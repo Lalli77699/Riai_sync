@@ -10,7 +10,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div className="App bg-slate-50 min-h-screen">
         {shouldShowHeader && <Header />}
 
         <Routes>
