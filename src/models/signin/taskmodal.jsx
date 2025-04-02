@@ -55,7 +55,7 @@ const Taskmodal = ({ open, setOpen }) => {
               onClick={() => setOpen(false)}
               className="bg-gray-500 text-white px-4 py-2 rounded-md"
             >
-              Close
+              Skip
             </button>
           </div>
         </div>
