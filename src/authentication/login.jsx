@@ -8,12 +8,13 @@ import "react-toastify/dist/ReactToastify.css";
 import api from "api/api";
 import ToastMessage from "utils/mui/toast";
 import OTPConfirmation from "./otp";
-
+import qs from "qs";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [message,setMessage] = useState("")
+  const [loading,isloading]=useState(false)
   const [severity,setSeverity] = useState("")
   const [isOpen,setIsOpen]= useState(false);
   const [showOTP, setShowOTP] = useState(false);
@@ -37,15 +38,48 @@ const Login = () => {
       setIsOpen(true);
       return;
     }
+    try {
+      isloading(true)
+      const data = qs.stringify({
+        username: email,
+        password: password,
+      });
+      
+      const response = await api.post("/auth/login", data, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+      if(response.status==200&&response?.data?.
+        access_token
+        ){
+navigate('/landing')
 
-    setShowOTP(true);
+        }else if(response.status==201){
+          setMessage("Invalid Credentials")
+          setSeverity('error')
+          setIsOpen(true);
+        }
+      
+console.log(response)
+    } catch (error) {
+      console.log(error)
+      
+      setMessage("something went wrong")
+      setSeverity('error')
+      setIsOpen(true);
+    }finally{
+isloading(false)
+
+
+    }
+
+    
   };
 
   return (
     <>
-      {showOTP ? (
-        <OTPConfirmation onConfirm={() => navigate("/dashboard")} onResend={() => console.log("Resend OTP")} />
-      ) : (
+     
         <div className="w-full min-h-screen flex justify-center items-center">
           <div className="w-[80%] h-[80vh] flex rounded-lg shadow-lg overflow-hidden">
             <div className="w-[100%] sm:w-[50%] h-full bg-white p-12 flex flex-col justify-between">
@@ -103,9 +137,12 @@ const Login = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-slate-600 rounded-full text-white py-3 text-xl transform transition-all duration-300 hover:bg-slate-700 focus:outline-none hover:scale-105"
+                  disabled={loading}
+                  className={`w-full bg-slate-600 rounded-full text-white py-3 text-xl transform transition-all duration-300 hover:bg-slate-700 focus:outline-none hover:scale-105 ${
+                  loading ? "cursor-not-allowed opacity-50 hover:scale-100 hover:bg-slate-600" : ""
+                  }`}
                 >
-                  Sign In
+                 {loading?"submitting": "Login" }
                 </button>
 
                 <div className="flex justify-between items-center mt-4">
@@ -141,7 +178,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-      )}
+      
       <ToastMessage message={message} severity={severity} open={isOpen} handleClose={handleClose} />
     </>
   );
