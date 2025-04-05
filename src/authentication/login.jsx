@@ -40,15 +40,11 @@ const Login = () => {
     }
     try {
       isloading(true)
-      const data = qs.stringify({
+      
+      
+      const response = await api.post("/auth/login", {
         username: email,
         password: password,
-      });
-      
-      const response = await api.post("/auth/login", data, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
       });
       if(response.status==200&&response?.data?.
         access_token
