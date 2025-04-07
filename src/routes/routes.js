@@ -1,7 +1,6 @@
 import Login from "authentication/login";
 import Landing from "pages/landingpage";
 import Signup from "authentication/signup";
-import Form from "form";
 import Logsheet from "logsheet";
 import DashboardScreen from "designeg";
 import LeaveRequestEmail from "leave/leaverequest";
@@ -9,6 +8,7 @@ import LeaveForm from "leave/leaveform";
 import Practice from "practice";
 import Expenses from "pages/expense/expenses";
 import Tabs from "profile/Tabs";
+import Onboardingform from "Admin/Pages/onboarding";
 
 
 export const routes = [
@@ -30,8 +30,8 @@ export const routes = [
     isSidenav:false
   },
   {
-    path: "/form",
-    component: <Form />,
+    path: "/onboard",
+    component: <Onboardingform />,
     isHeader: true,
     
   },

@@ -43,12 +43,11 @@ const Login = () => {
       
       
       const response = await api.post("/auth/login", {
-        username: email,
+        email: email,
         password: password,
       });
-      if(response.status==200&&response?.data?.
-        access_token
-        ){
+      if(response.status==200&&response?.data?.access_token){
+          sessionStorage.setItem('auth', response.data.access_token);
 navigate('/landing')
 
         }else if(response.status==201){

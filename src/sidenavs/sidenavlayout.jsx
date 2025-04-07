@@ -17,7 +17,7 @@ import { IoWallet } from "react-icons/io5";
 
 const menuItems = [
   { name: "Home", icon: <FaHome />, navigation: "/landing" },
-  { name: "Onboarding", icon: <FaUserPlus />, navigation: "/form" },
+  { name: "Onboarding", icon: <FaUserPlus />, navigation: "/onboard" },
   { name: "Dashboard", icon: <FaTachometerAlt />, navigation: "/dashboard" },
   { name: "Leave Tracker", icon: <BsFillCalendarCheckFill />, navigation: "/leaverequest" },
   { name: "Leave Request", icon: <MdOutlineRequestPage />, navigation: "/leaveform" },
