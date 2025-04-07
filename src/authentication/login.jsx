@@ -52,7 +52,7 @@ const Login = () => {
 
 
 
-// navigate('/landing')
+ navigate('/landing')
 
         }else if(response.status==201){
           setMessage("Invalid Credentials")

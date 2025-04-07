@@ -29,7 +29,7 @@ api.interceptors.request.use(
 
       sessionStorage.removeItem('auth');
 
-     window.location.replace('/');
+ 
 
     }
 

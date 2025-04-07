@@ -2,6 +2,9 @@ import { useState } from "react";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import ToastMessage from "utils/mui/toast";
+import api from "api/api";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -9,19 +12,74 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
+
   const navigate = useNavigate()
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (password !== confirmPassword) {
-      setMessage("❌ Passwords do not match. Please try again.");
+  const [message,setMessage] = useState("")
+  const [loading,setloading]=useState(false)
+  const [severity,setSeverity] = useState("")
+  const [isOpen,setIsOpen]= useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
       return;
     }
-    
-    setMessage("✅ Signup successful!");
+    setIsOpen(false);
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Email format validation using regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setMessage("❌ Please enter a valid email address.");
+      setSeverity('error');
+      setIsOpen(true);
+      return;
+    }
+  
+    if (password !== confirmPassword) {
+      setMessage("❌ Passwords do not match. Please try again.");
+      setSeverity('error');
+      setIsOpen(true);
+      return;
+    }
+  
+    try {
+      setloading(true);
+      const response = await api.post('/users/', {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        password: password,
+        notes: "string" // still hardcoded as per your comment
+      });
+  if(response.status==200){
+      setMessage(response?.data?.message);
+      setSeverity('success');
+      setIsOpen(true);
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 2000);
+  }else{
+
+    setMessage(response?.data?.message);
+    setSeverity('info');
+    setIsOpen(true);
+
+
+  }
+      // Optional: Navigate or show a success message
+    
+  
+    } catch (error) {
+      console.log(error);
+      setMessage("❌ Something went wrong during signup.");
+      setSeverity('error');
+      setIsOpen(true);
+    } finally {
+      setloading(false);
+    }
+  };
+  
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center">
@@ -106,8 +164,7 @@ const Signup = () => {
               Sign Up
             </button>
           </form>
-          
-          <p className="text-center text-red-500 font-medium mt-2">{message}</p>
+
         </div>
 
         <div className="none sm:visible sm:w-[50%] min-h-full bg-orange-600 text-white flex flex-col justify-center items-center p-12">
@@ -123,7 +180,15 @@ const Signup = () => {
           </button>
         </div>
       </div>
+      <Backdrop
+  sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+  open={loading}
+>
+  <CircularProgress color="inherit" />
+</Backdrop>
+            <ToastMessage message={message} severity={severity} open={isOpen} handleClose={handleClose} />
     </div>
+    
   );
 };
 

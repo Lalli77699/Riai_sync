@@ -8,7 +8,7 @@ function Layout() {
   const location = useLocation();
 
   const navigate = useNavigate()
-  const unrestricted = ["/"];
+  const unrestricted = ["/",'/signup'];
 
   const shouldShowHeader = routes.some(
     (route) => location.pathname === route.path && route.isHeader
