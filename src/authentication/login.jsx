@@ -48,7 +48,11 @@ const Login = () => {
       });
       if(response.status==200&&response?.data?.access_token){
           sessionStorage.setItem('auth', response.data.access_token);
-navigate('/landing')
+          const result= await api.get("/users/config")
+
+
+
+// navigate('/landing')
 
         }else if(response.status==201){
           setMessage("Invalid Credentials")

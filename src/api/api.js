@@ -15,35 +15,35 @@ const api = axios.create({
 });
  
  
-// api.interceptors.request.use(
+api.interceptors.request.use(
 
-//   (config) => {
+  (config) => {
 
-//     const token = sessionStorage.getItem('auth'); 
+    const token = sessionStorage.getItem('auth'); 
 
-//     if (token) {
+    if (token) {
 
-//       config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
 
-//     } else {
+    } else {
 
-//       sessionStorage.removeItem('auth');
+      sessionStorage.removeItem('auth');
 
-//     //  window.location.replace('/auth');
+     window.location.replace('/');
 
-//     }
+    }
 
-//     return config;
+    return config;
 
-//   },
+  },
 
-//   (error) => {
+  (error) => {
 
-//     return Promise.reject(error);
+    return Promise.reject(error);
 
-//   }
+  }
 
-// );
+);
 
 // let isRefreshing = false;
  
