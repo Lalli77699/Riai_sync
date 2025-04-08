@@ -9,6 +9,7 @@ import Practice from "practice";
 import Expenses from "pages/expense/expenses";
 import Tabs from "profile/Tabs";
 import Onboardingform from "Admin/Pages/onboarding";
+import Verification from "Admin/Pages/verfication";
 
 
 export const routes = [
@@ -22,6 +23,11 @@ export const routes = [
     path: "/landing",
     component: <Landing />,
     isHeader: true,
+  },
+  {
+    path: "/verify",
+    component: <Verification/>,
+    isHeader: false,
   },
   {
     path: "/signup",

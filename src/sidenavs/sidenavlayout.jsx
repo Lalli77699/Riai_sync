@@ -32,7 +32,7 @@ const menuItems = [
 ];
 
 // Define routes where sidebar should be hidden
-const hiddenRoutes = ["/", "/login",'/signup', "/register"]; // Add more if needed
+const hiddenRoutes = ["/", "/login",'/signup', "/register","/verify"]; // Add more if needed
 
 const SidenavLayout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);

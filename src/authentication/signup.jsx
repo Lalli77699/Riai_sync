@@ -50,7 +50,8 @@ const Signup = () => {
         last_name: lastName,
         email: email,
         password: password,
-        notes: "string" // still hardcoded as per your comment
+        notes: "string" 
+        
       });
   if(response.status==200){
       setMessage(response?.data?.message);
