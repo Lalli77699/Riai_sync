@@ -4,7 +4,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import ToastMessage from "utils/mui/toast";
 
-
 const Onboardingform = () => {
   const [formData, setFormData] = useState({
     emp_name: "",
@@ -14,18 +13,17 @@ const Onboardingform = () => {
     notes: "",
   });
 
-  const [initialLoading, setInitialLoading] = useState(true); // For full screen loader
-  const [submitLoading, setSubmitLoading] = useState(false); 
-  const [message,setMessage] = useState("");
-  const [severity,setSeverity] = useState("");
-  const [isOpen,setIsOpen]= useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const [roles, setRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
 
-
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setIsOpen(false);
@@ -52,8 +50,6 @@ const Onboardingform = () => {
       }
     } catch (err) {
       console.error("Dropdown fetch error:", err);
-
-      
     } finally {
       setInitialLoading(false);
     }
@@ -70,37 +66,32 @@ const Onboardingform = () => {
       const response = await api.post("/onboardusers/", payload, {
         headers: { "Content-Type": "application/json" },
       });
-      if(response.status==200){
-        setMessage("user onboard successfully")
-      setSeverity('success')
-      setIsOpen(true);
-      setFormData({
-        emp_name: "",
-        role_id: "",
-        department_id: "",
-        email: "",
-        notes: "",
-      });
-      }else if(response.status==201){
-        setMessage(response?.data?.detail)
-      setSeverity('info')
-      setIsOpen(true);
-
-      }else{
-        setMessage("something went wrong")
-      setSeverity('error')
-      setIsOpen(true);
-        
+      if (response.status === 200) {
+        setMessage("user onboard successfully");
+        setSeverity("success");
+        setIsOpen(true);
+        setFormData({
+          emp_name: "",
+          role_id: "",
+          department_id: "",
+          email: "",
+          notes: "",
+        });
+      } else if (response.status === 201) {
+        setMessage(response?.data?.detail);
+        setSeverity("info");
+        setIsOpen(true);
+      } else {
+        setMessage("something went wrong");
+        setSeverity("error");
+        setIsOpen(true);
       }
 
       console.log("Response:", response.data);
-      // Optional: Reset form
-
     } catch (error) {
       console.error("Submit error:", error.response?.data || error.message);
-
-      setMessage("something went wrong")
-      setSeverity('error')
+      setMessage("something went wrong");
+      setSeverity("error");
       setIsOpen(true);
     } finally {
       setSubmitLoading(false);
@@ -121,15 +112,27 @@ const Onboardingform = () => {
 
   return (
     <>
-      {/* Fullscreen loader */}
       <Backdrop open={initialLoading} sx={{ zIndex: 1300, color: "#fff" }}>
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      {/* Form UI */}
+      
+      <div className="relative w-full">
+        <button
+          type="button"
+          className="absolute top-4 right-6 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition duration-200"
+          onClick={() => {
+            console.log("Navigate to onboarders view");
+          }}
+        >
+          View Onboarders
+        </button>
+      </div>
+
+      
       {!initialLoading && (
-        <div className="max-w-3xl mx-auto mt-10 px-6">
-          <div className="bg-white shadow-lg rounded-2xl p-8">
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 mt-20 px-6">
+          <div className="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
             <h2 className="text-2xl font-bold text-center mb-6">Employee Onboarding Form</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -229,7 +232,6 @@ const Onboardingform = () => {
             </form>
           </div>
         </div>
-        
       )}
       <ToastMessage message={message} severity={severity} open={isOpen} handleClose={handleClose} />
     </>

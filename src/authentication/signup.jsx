@@ -51,7 +51,7 @@ const Signup = () => {
         email: email,
         password: password,
         notes: "string" 
-        
+
       });
   if(response.status==200){
       setMessage(response?.data?.message);
@@ -68,7 +68,7 @@ const Signup = () => {
 
 
   }
-      // Optional: Navigate or show a success message
+    
     
   
     } catch (error) {

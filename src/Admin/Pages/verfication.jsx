@@ -9,7 +9,6 @@ const Verification = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Helper to get token from query param
   const getToken = () => {
     const params = new URLSearchParams(location.search);
     return params.get("token");
@@ -25,7 +24,7 @@ const Verification = () => {
       }
 
       try {
-        const response = await api.get(`/user/verify?token=${token}`);
+        const response = await api.get(`/users/verify?token=${token}`);
         if (response.status === 200) {
           setText("Verification successful! Redirecting...");
           setTimeout(() => navigate("/"), 5000);
