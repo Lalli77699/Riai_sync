@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
@@ -14,6 +14,7 @@ import {
 import { MdAssignment, MdOutlineRequestPage } from "react-icons/md";
 import { BsFillCalendarCheckFill } from "react-icons/bs";
 import { IoWallet } from "react-icons/io5";
+import { useSelector } from "react-redux";
 
 const menuItems = [
   { name: "Home", icon: <FaHome />, navigation: "/landing" },
@@ -31,28 +32,47 @@ const menuItems = [
   { name: "Logout", icon: <FaSignOutAlt />, navigation: "/logout" },
 ];
 
-// Define routes where sidebar should be hidden
-const hiddenRoutes = ["/", "/login",'/signup', "/register","/verify"]; // Add more if needed
+
+const hiddenRoutes = ["/", "/login", "/signup", "/register", "/verify"];
 
 const SidenavLayout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const user = useSelector((state) => state.user.user);
 
-  // Check if sidebar should be hidden
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const shouldHideSidebar = hiddenRoutes.includes(location.pathname);
+
+  
+  if (!user) return null;
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    
+    if (user.role_id === 1 || user.role_id === 2) {
+      return item.name === "Home" || item.name === "Onboarding";
+    } else {
+      return item.name !== "Onboarding";
+    }
+  });
 
   return (
     <div className="flex h-auto">
       {!shouldHideSidebar && (
         <div
-          className={`h-full bg-gray-800 text-white p-4 rounded-r-lg transition-all duration-300 ${
-            isOpen ? "w-60" : "w-16"
-          }`}
+        className={`${
+          user.role_id === 1 || user.role_id === 2 ? "h-screen" : "h-full"
+        } bg-gray-800 text-white p-4 rounded-r-lg transition-all duration-300 ${
+          isOpen ? "w-60" : "w-16"
+        }`}
+      
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
         >
           <div className="flex flex-col space-y-4">
-            {menuItems.map((item, index) => (
+            {filteredMenuItems.map((item, index) => (
               <Link
                 key={index}
                 to={item.navigation}

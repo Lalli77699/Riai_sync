@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "api/api";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
@@ -21,6 +22,8 @@ const Onboardingform = () => {
 
   const [roles, setRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -116,20 +119,16 @@ const Onboardingform = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      
       <div className="relative w-full">
         <button
           type="button"
           className="absolute top-4 right-6 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition duration-200"
-          onClick={() => {
-            console.log("Navigate to onboarders view");
-          }}
+          onClick={() => navigate("/usersonboard")}
         >
           View Onboarders
         </button>
       </div>
 
-      
       {!initialLoading && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 mt-20 px-6">
           <div className="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">

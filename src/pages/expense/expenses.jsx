@@ -9,7 +9,6 @@ const Expenses = () => {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    // Load existing records from localStorage on mount
     const savedRecords = JSON.parse(localStorage.getItem("expenseRecords")) || [];
     setRecords(savedRecords);
   }, []);

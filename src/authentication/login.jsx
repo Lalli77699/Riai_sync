@@ -9,6 +9,8 @@ import api from "api/api";
 import ToastMessage from "utils/mui/toast";
 import OTPConfirmation from "./otp";
 import qs from "qs";
+import { useDispatch } from "react-redux";
+import { setUser } from "../Redux/userSlice"
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +21,7 @@ const Login = () => {
   const [isOpen,setIsOpen]= useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -49,6 +52,8 @@ const Login = () => {
       if(response.status==200&&response?.data?.access_token){
           sessionStorage.setItem('auth', response.data.access_token);
           const result= await api.get("/users/config")
+          console.log(result)
+          dispatch(setUser(result.data));
 
 
 
@@ -60,7 +65,7 @@ const Login = () => {
           setIsOpen(true);
         }
       
-console.log(response)
+
     } catch (error) {
       console.log(error)
       

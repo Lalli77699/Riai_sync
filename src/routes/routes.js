@@ -5,11 +5,15 @@ import Logsheet from "logsheet";
 import DashboardScreen from "designeg";
 import LeaveRequestEmail from "leave/leaverequest";
 import LeaveForm from "leave/leaveform";
-import Practice from "practice";
 import Expenses from "pages/expense/expenses";
 import Tabs from "profile/Tabs";
 import Onboardingform from "Admin/Pages/onboarding";
 import Verification from "Admin/Pages/verfication";
+import Usersonboard from "Admin/usersonboard";
+import Sheet from "clockin/sheet";
+import One from "practice/one";
+import Second from "practice/second";
+import Third from "practice/third";
 
 
 export const routes = [
@@ -27,6 +31,11 @@ export const routes = [
   {
     path: "/verify",
     component: <Verification/>,
+    isHeader: false,
+  },
+  {
+    path: "/usersonboard",
+    component: <Usersonboard/>,
     isHeader: false,
   },
   {
@@ -73,11 +82,24 @@ export const routes = [
     isHeader:true,
   },
   {
-    path:'/practice',
-    component:<Practice/>,
-    isHeader:false,
-  },  
-  
- 
-
+    path: "/sheet",
+    component: <Sheet/>,
+    isHeader: true,
+    isSidenav:true
+  },
+  {
+    path: "/one",
+    component: <One />,
+    isHeader: true,
+  },
+  {
+    path: "/second",
+    component: <Second/>,
+    isHeader: true,
+  },
+  {
+    path: "/third",
+    component: <Third/>,
+    isHeader: true,
+  },
 ]
