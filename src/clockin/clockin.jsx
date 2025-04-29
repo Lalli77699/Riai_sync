@@ -43,7 +43,6 @@ const ClockIn = () => {
   const checkin= async()=>{
     try {
       const response = await api.post('/attendance/',{
-        "emp_id": user.emp_id,
         "shift": "General",
         "checkin_location": "string",
         "device_info": "string",
@@ -64,9 +63,7 @@ fetchClockData()
   }
   const checkout= async()=>{
     try {
-      const response = await api.put(`/attendance/checkout/${user.emp_id}`,{
-        "signout_by": user.emp_id
-      })
+      const response = await api.get(`/attendance/checkout`);
       
     } catch (error) {
       
@@ -88,7 +85,7 @@ fetchClockData()
 
   const fetchClockData = async () => {
     try {
-      const res = await api.get(`/attendance/get/${user.emp_id}`);
+      const res = await api.get(`/attendance/get`);
       if (res.status === 201 || !res.data?.data) {
         setStatus("clockin");
       } else {

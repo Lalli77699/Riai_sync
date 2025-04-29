@@ -45,7 +45,7 @@ const Login = () => {
       isloading(true)
       
       
-      const response = await api.post("/auth/login", {
+      const response = await api.post("/auth/logins", {
         email: email,
         password: password,
       });
