@@ -1,54 +1,95 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import api from "api/api";
+import { CircularProgress, Card, CardContent, Typography, Button, Box } from "@mui/material";
+import { useSelector } from "react-redux";
+
+
 
 const Sheet = () => {
-  // Fake employee attendance data
-  const data = [
-    {
-      name: "Subhash Varma",
-      clockIn: "08:45 AM",
-      clockOut: "05:00 PM",
-      status: "Present",
-    },
-    {
-      name: "Lalli Priya",
-      clockIn: "09:15 AM",
-      clockOut: "04:30 PM",
-      status: "Late",
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user.user);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, []);
+
+  const fetchAttendance = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/attendance/today");
+      if (response.data?.success && Array.isArray(response.data.data)) {
+        setData(response.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching attendance:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = async (attendanceId,status) => {
+    try {
+      const response = await api.put("/attendance/update",
+        {
+          "emp_id": attendanceId,
+          "is_reset": status=="r"?true:false,
+          "is_checkout": status=="c"?true:false,
+        }
+      );
+      if (response.status=200) {
+        
+      }
+    } catch (err) {
+      console.error("Error fetching attendance:", err);
+    } finally {
+      fetchAttendance()
+    }
+    
+   
+  };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Attendance Records</h2>
-      <div className="overflow-x-auto shadow-lg rounded-lg">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg">
-          <thead>
-            <tr className="bg-blue-500 text-white">
-              <th className="border p-3">Employee Name</th>
-              <th className="border p-3">Clock In</th>
-              <th className="border p-3">Clock Out</th>
-              <th className="border p-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((employee, index) => (
-              <tr key={index} className="border hover:bg-gray-100 odd:bg-gray-50 even:bg-white">
-                <td className="border p-3">{employee.name}</td>
-                <td className="border p-3">{employee.clockIn}</td>
-                <td className="border p-3">{employee.clockOut}</td>
-                <td
-                  className={`border p-3 font-semibold ${
-                    employee.status === "Present" ? "text-green-600" : "text-yellow-600"
-                  }`}
+    <Box className="p-6 bg-gray-100 min-h-screen">
+      <Typography variant="h4" className="mb-6 text-gray-800 font-bold">
+        Attendance Records
+      </Typography>
+
+      {loading ? (
+        <Box display="flex" justifyContent="center" mt={10}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box display="flex" flexDirection="column" gap={3}>
+          {data.map((entry, index) => (
+            <Card key={index} className="w-full shadow-md">
+              <CardContent className="space-y-2">
+                <Typography variant="h6" className="text-blue-700 font-bold">
+                  Employee: {entry.emp_name || "N/A"}
+                </Typography>
+                <Typography>Clock In: {entry.check_in || "N/A"}</Typography>
+                <Typography>Clock Out: {entry.check_out || "N/A"}</Typography>
+                <Typography>Status: {entry.status}</Typography>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleReset(entry.emp_id,"r")}
                 >
-                  {employee.status}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                  Reset
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleReset(entry.emp_id,"c")}
+                >
+                  CheckOut
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
 };
 

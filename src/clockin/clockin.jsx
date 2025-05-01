@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { AccountCircle } from "@mui/icons-material";
-import Taskmodal from "models/signin/taskmodal";
 import { useSelector } from "react-redux";
 import api from "api/api";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import ToastMessage from "utils/mui/toast";
 
 dayjs.extend(utc);
 
 const ClockIn = () => {
-  const [modalOpen, setModalOpen] = useState(false);
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [clockData, setClockData] = useState(null);
   const [status, setStatus] = useState("loading"); 
+  const [loading,setLoading] =useState(false) 
+  const [message,setMessage] = useState("")
+  const [severity,setSeverity] = useState("")
+  const [isOpen,setIsOpen]= useState(false);
+
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setIsOpen(false);
+  };
+  
 
   const user = useSelector((state) => state.user.user);
 
@@ -29,23 +41,33 @@ const ClockIn = () => {
     return () => clearInterval(timer);
   }, [isRunning]);
 
-  const handleClockToggle = () => {
-    if (isRunning) {
-      // Clocking out
-      setIsRunning(false);
-      setTime(0);
-    } else {
-      // Clocking in
-      setModalOpen(true);
-      setIsRunning(true);
-    }
-  };
+  const getLocation = () =>
+    new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject("Geolocation not supported");
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve(
+              `${position.coords.latitude},${position.coords.longitude}`
+            );
+          },
+          () => reject("Location access denied")
+        );
+      }
+    });
+
+ 
   const checkin= async()=>{
     try {
+      setLoading(true)
+      let checkinLocation = await getLocation();
+      
       const response = await api.post('/attendance/',{
+        "emp_name":user.first_name||"",
         "shift": "General",
-        "checkin_location": "string",
-        "device_info": "string",
+        "checkin_location": checkinLocation||"",
+        "device_info":  navigator.userAgent||"",
         "ip_address": "string",
         "notes": "string",
         "status": "active",
@@ -54,20 +76,53 @@ const ClockIn = () => {
         },
         "signout_by": user.emp_id
       })
+
+      if(response.status==200){
+        setMessage("Clockin Successfully")
+        setSeverity('success')
+        setIsOpen(true);
+
+
+      }else {
+        setMessage(response?.message||"something went wrong")
+        setSeverity('info')
+        setIsOpen(true);
+      }
       
     } catch (error) {
+      console.log(error)
+
+      setMessage("something went wrong")
+      setSeverity('error')
+      setIsOpen(true);
       
     }finally{
+      setLoading(false)
 fetchClockData()
     }
   }
   const checkout= async()=>{
     try {
+      setLoading(true)
       const response = await api.get(`/attendance/checkout`);
+
+      if(response.status==200){
+        setMessage("Checked Out Successfully")
+        setSeverity('success')
+        setIsOpen(true);
+
+
+      }else {
+        setMessage(response?.message||"something went wrong")
+        setSeverity('info')
+        setIsOpen(true);
+      }
       
     } catch (error) {
+      console.log(error)
       
     }finally{
+      setLoading(false)
 fetchClockData()
     }
   }
@@ -124,7 +179,7 @@ fetchClockData()
     return `${hrs}:${mins}:${secs}`;
   };
 
-  return (
+  return (<>
     <div className="relative h-70 flex justify-end p-2">
       <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-8">
         {/* Profile & Name */}
@@ -143,12 +198,16 @@ fetchClockData()
         <div className="flex flex-col items-center">
           {status === "clockin" && (
             <>
-              <button
-                onClick={()=>checkin()}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition"
-              >
-                Clock In
-              </button>
+             <button
+  onClick={() => checkin()}
+  disabled={loading}
+  className={`px-4 py-2 ${
+    loading ? 'bg-red-300 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'
+  } text-white rounded-md transition`}
+>
+  {loading ? 'Clocking In...' : 'Clock In'}
+</button>
+
               <div className="mt-2 text-2xl font-bold text-gray-700">{formatTime(time)}</div>
             </>
           )}
@@ -156,11 +215,15 @@ fetchClockData()
           {status === "clockout" && (
             <>
               <button
-                onClick={()=>checkout()}
-                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition"
-              >
-                Clock Out
-              </button>
+  onClick={() => checkout()}
+  disabled={loading}
+  className={`px-4 py-2 ${
+    loading ? 'bg-green-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
+  } text-white rounded-md transition`}
+>
+  {loading ? 'Clocking Out...' : 'Clock Out'}
+</button>
+
               <div className="mt-2 text-2xl font-bold text-gray-700">{formatTime(time)}</div>
             </>
           )}
@@ -175,9 +238,10 @@ fetchClockData()
           )}
         </div>
       </div>
-
-      {modalOpen && <Taskmodal open={modalOpen} setOpen={setModalOpen} />}
     </div>
+
+    <ToastMessage message={message} severity={severity} open={isOpen} handleClose={handleClose} />
+    </>
   );
 };
 

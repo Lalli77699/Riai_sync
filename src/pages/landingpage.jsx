@@ -10,11 +10,11 @@ const Landing = () => {
 
   if (!user) return null;
 
-  const isSheetUser = user.role_id === 1 || user.role_id === 2;
+  const admin = user.role_id === 1 || user.role_id === 2;
 
   return (
     <div className="flex flex-row w-full">
-      {isSheetUser ? (
+      {admin ? (
         <div className="flex-1">
           <Sheet />
         </div>
