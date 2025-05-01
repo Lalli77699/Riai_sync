@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "api/api";
-import { CircularProgress, Card, CardContent, Typography, Button, Box } from "@mui/material";
 import { useSelector } from "react-redux";
-
-
 
 const Sheet = () => {
   const [data, setData] = useState([]);
@@ -20,76 +17,94 @@ const Sheet = () => {
       const response = await api.get("/attendance/today");
       if (response.data?.success && Array.isArray(response.data.data)) {
         setData(response.data.data);
+      } else {
+        setData([]);
       }
     } catch (err) {
       console.error("Error fetching attendance:", err);
+      setData([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleReset = async (attendanceId,status) => {
+  const handleReset = async (attendanceId, actionType) => {
     try {
-      const response = await api.put("/attendance/update",
-        {
-          "emp_id": attendanceId,
-          "is_reset": status=="r"?true:false,
-          "is_checkout": status=="c"?true:false,
-        }
-      );
-      if (response.status=200) {
-        
-      }
+      await api.put("/attendance/update", {
+        attendance_id: attendanceId,
+        is_reset: actionType === "r",
+        is_checkout: actionType === "c",
+      });
     } catch (err) {
-      console.error("Error fetching attendance:", err);
+      console.error("Error updating attendance:", err);
     } finally {
-      fetchAttendance()
+      fetchAttendance();
     }
-    
-   
   };
 
   return (
-    <Box className="p-6 bg-gray-100 min-h-screen">
-      <Typography variant="h4" className="mb-6 text-gray-800 font-bold">
-        Attendance Records
-      </Typography>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">Attendance Records</h1>
 
       {loading ? (
-        <Box display="flex" justifyContent="center" mt={10}>
-          <CircularProgress />
-        </Box>
+        <div className="flex justify-center mt-20">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : data.length === 0 ? (
+        <div className="flex justify-center mt-20">
+          <p className="text-gray-500 text-lg">No attendance data yet</p>
+        </div>
       ) : (
-        <Box display="flex" flexDirection="column" gap={3}>
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {data.map((entry, index) => (
-            <Card key={index} className="w-full shadow-md">
-              <CardContent className="space-y-2">
-                <Typography variant="h6" className="text-blue-700 font-bold">
-                  Employee: {entry.emp_name || "N/A"}
-                </Typography>
-                <Typography>Clock In: {entry.check_in || "N/A"}</Typography>
-                <Typography>Clock Out: {entry.check_out || "N/A"}</Typography>
-                <Typography>Status: {entry.status}</Typography>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => handleReset(entry.emp_id,"r")}
+            <div
+              key={index}
+              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition"
+            >
+              <h2 className="text-xl font-semibold text-blue-700 mb-2">
+                {entry.emp_name || "Unnamed Employee"}
+              </h2>
+              <div className="text-sm text-gray-700 space-y-1">
+                <p><span className="font-medium">Shift:</span> {entry.shift || "N/A"}</p>
+                <p><span className="font-medium">Check-in Location:</span> {entry.checkin_location || "N/A"}</p>
+                <p><span className="font-medium">Device Info:</span> {entry.device_info || "N/A"}</p>
+                <p><span className="font-medium">IP Address:</span> {entry.ip_address || "N/A"}</p>
+                <p>
+                  <span className="font-medium">Clock In:</span>{" "}
+                  {entry.check_in
+                    ? new Date(entry.check_in).toLocaleString()
+                    : "N/A"}
+                </p>
+                <p>
+                  <span className="font-medium">Clock Out:</span>{" "}
+                  {entry.check_out
+                    ? new Date(entry.check_out).toLocaleString()
+                    : "N/A"}
+                </p>
+                <p><span className="font-medium">Status:</span> {entry.status}</p>
+              </div>
+
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => handleReset(entry.attendance_id, "r")}
+                  className="px-4 py-2 text-sm font-medium bg-yellow-100 text-yellow-800 rounded-lg border border-yellow-300 hover:bg-yellow-200 transition"
                 >
                   Reset
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => handleReset(entry.emp_id,"c")}
-                >
-                  CheckOut
-                </Button>
-              </CardContent>
-            </Card>
+                </button>
+                {!entry.check_out && (
+                  <button
+                    onClick={() => handleReset(entry.attendance_id, "c")}
+                    className="px-4 py-2 text-sm font-medium bg-green-100 text-green-800 rounded-lg border border-green-300 hover:bg-green-200 transition"
+                  >
+                    Check Out
+                  </button>
+                )}
+              </div>
+            </div>
           ))}
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 
