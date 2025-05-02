@@ -8,7 +8,10 @@ import { useSelector } from "react-redux";
 const Landing = () => {
   const user = useSelector((state) => state.user.user);
 
-  if (!user) return null;
+  // Show nothing or a loader until user is fully available and role_id is set
+  if (!user || user.role_id === undefined || user.role_id === null) {
+    return null; // or return a loader component here
+  }
 
   const admin = user.role_id === 1 || user.role_id === 2;
 

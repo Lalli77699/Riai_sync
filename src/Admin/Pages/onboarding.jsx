@@ -35,7 +35,14 @@ const Onboardingform = () => {
   const isFormValid = Object.values(formData).every((value) => value.trim() !== "");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Reset department_id when role_id changes
+    if (name === "role_id") {
+      setFormData((prev) => ({ ...prev, [name]: value, department_id: "" }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const fetchDropdownData = async () => {
@@ -58,6 +65,15 @@ const Onboardingform = () => {
     }
   };
 
+  const getFilteredDepartments = () => {
+    if (formData.role_id === "3") {
+      return departments.filter((dept) =>
+        ["1", "3", "4"].includes(dept.department_id.toString())
+      );
+    }
+    return departments;
+  };
+
   const submitFormData = async () => {
     const payload = {
       ...formData,
@@ -70,7 +86,7 @@ const Onboardingform = () => {
         headers: { "Content-Type": "application/json" },
       });
       if (response.status === 200) {
-        setMessage("user onboard successfully");
+        setMessage("User onboarded successfully");
         setSeverity("success");
         setIsOpen(true);
         setFormData({
@@ -85,7 +101,7 @@ const Onboardingform = () => {
         setSeverity("info");
         setIsOpen(true);
       } else {
-        setMessage("something went wrong");
+        setMessage("Something went wrong");
         setSeverity("error");
         setIsOpen(true);
       }
@@ -93,7 +109,7 @@ const Onboardingform = () => {
       console.log("Response:", response.data);
     } catch (error) {
       console.error("Submit error:", error.response?.data || error.message);
-      setMessage("something went wrong");
+      setMessage("Something went wrong");
       setSeverity("error");
       setIsOpen(true);
     } finally {
@@ -160,24 +176,6 @@ const Onboardingform = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-1 font-semibold">Department</label>
-                  <select
-                    name="department_id"
-                    value={formData.department_id}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select Department</option>
-                    {departments.map((dept) => (
-                      <option key={dept.department_id} value={dept.department_id}>
-                        {dept.department_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
                   <label className="block mb-1 font-semibold">Role</label>
                   <select
                     name="role_id"
@@ -190,6 +188,25 @@ const Onboardingform = () => {
                     {roles.map((role) => (
                       <option key={role.role_id} value={role.role_id}>
                         {role.role_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-semibold">Department</label>
+                  <select
+                    name="department_id"
+                    value={formData.department_id}
+                    onChange={handleChange}
+                    required
+                    disabled={!formData.role_id}
+                    className="w-full px-4 py-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Department</option>
+                    {getFilteredDepartments().map((dept) => (
+                      <option key={dept.department_id} value={dept.department_id}>
+                        {dept.department_name}
                       </option>
                     ))}
                   </select>

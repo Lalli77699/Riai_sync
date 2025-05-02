@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
@@ -47,24 +47,23 @@ const SidenavLayout = ({ children }) => {
   const shouldHideSidebar = hiddenRoutes.includes(location.pathname);
 
   
-  if (!user) return null;
 
-  const filteredMenuItems = menuItems.filter((item) => {
+
+  const filteredMenuItems =useMemo(() => {
+    if (user?.role_id === undefined) return [];
     
     if (user.role_id === 1 || user.role_id === 2) {
-      return item.name === "Home" || item.name === "Onboarding";
+      return menuItems.filter((item) => item.name === "Home" || item.name === "Onboarding");
     } else {
-      return item.name !== "Onboarding";
+      return menuItems.filter((item) => item.name !== "Onboarding");
     }
-  });
-
+  }, [user]);
+  if (!user) return null;
   return (
-    <div className="flex h-auto">
+    <div className="flex h-auto min-h-screen">
       {!shouldHideSidebar && (
         <div
-        className={`${
-          user.role_id === 1 || user.role_id === 2 ? "h-screen" : "h-full"
-        } bg-gray-800 text-white p-4 rounded-r-lg transition-all duration-300 ${
+        className={`min-h-full bg-gray-800 text-white p-4 rounded-r-lg transition-all duration-300 ${
           isOpen ? "w-60" : "w-16"
         }`}
       
