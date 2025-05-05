@@ -8,7 +8,7 @@ const Sheet = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [actionLoading, setActionLoading] = useState({});
-  const [checkOutLoading, setCheckOutLoading] = useState({}); // New state for check-out loading
+  const [checkOutLoading, setCheckOutLoading] = useState({});
   const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
