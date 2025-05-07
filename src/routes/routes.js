@@ -14,6 +14,7 @@ import Sheet from "clockin/sheet";
 import One from "practice/one";
 import Second from "practice/second";
 import Third from "practice/third";
+import Project from "pages/Project/project";
 
 
 export const routes = [
@@ -84,6 +85,12 @@ export const routes = [
   {
     path: "/sheet",
     component: <Sheet/>,
+    isHeader: true,
+    isSidenav:true
+  },
+  {
+    path: "/project",
+    component: <Project/>,
     isHeader: true,
     isSidenav:true
   },

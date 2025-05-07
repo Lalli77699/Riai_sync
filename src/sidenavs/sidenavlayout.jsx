@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 const menuItems = [
   { name: "Home", icon: <FaHome />, navigation: "/landing" },
   { name: "Onboarding", icon: <FaUserPlus />, navigation: "/onboard" },
+  { name: "Project", icon: <MdAssignment />, navigation: "/project" },
   { name: "Dashboard", icon: <FaTachometerAlt />, navigation: "/dashboard" },
   { name: "Leave Tracker", icon: <BsFillCalendarCheckFill />, navigation: "/leaverequest" },
   { name: "Leave Request", icon: <MdOutlineRequestPage />, navigation: "/leaveform" },
@@ -53,7 +54,7 @@ const SidenavLayout = ({ children }) => {
     if (user?.role_id === undefined) return [];
     
     if (user.role_id === 1 || user.role_id === 2) {
-      return menuItems.filter((item) => item.name === "Home" || item.name === "Onboarding");
+      return menuItems.filter((item) => item.name === "Home" || item.name === "Onboarding" || item.name === "Project");
     } else {
       return menuItems.filter((item) => item.name !== "Onboarding");
     }
