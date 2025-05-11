@@ -1,9 +1,9 @@
 import React from "react";
 import ClockIn from "clockin/clockin";
-import MenuCard from "menucard/menucard";
 import MyTask from "clockin/Mytask";
 import Sheet from "clockin/sheet";
 import { useSelector } from "react-redux";
+import Logs from "clockin/logs";
 
 const Landing = () => {
   const user = useSelector((state) => state.user.user);
@@ -24,7 +24,7 @@ const Landing = () => {
       ) : (
         <>
           <div className="flex-1">
-            <MenuCard />
+            <Logs />
           </div>
           <div className="w-1/4 flex flex-col gap-4 items-end pr-4">
             <ClockIn />
