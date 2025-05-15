@@ -1,7 +1,6 @@
 import Login from "authentication/login";
 import Landing from "pages/landingpage";
 import Signup from "authentication/signup";
-import Logsheet from "logsheet";
 import DashboardScreen from "designeg";
 import LeaveRequestEmail from "leave/leaverequest";
 import LeaveForm from "leave/leaveform";
@@ -15,6 +14,11 @@ import One from "practice/one";
 import Second from "practice/second";
 import Third from "practice/third";
 import Project from "pages/Project/project";
+import Timetracker from "Admin/Pages/Timesheets/Timetracker";
+import Timesheet from "Admin/Pages/Timesheets/timesheet";
+import Data from "Admin/Pages/Timesheets/Timesheetdata";
+import Timesheetdata from "Admin/Pages/Timesheets/Timesheetdata";
+
 
 
 export const routes = [
@@ -53,8 +57,18 @@ export const routes = [
   },
   
   {
-    path: "/logsheet",
-    component: <Logsheet />,
+    path: "/timetracker",
+    component: <Timetracker />,
+    isHeader: true,
+  },
+  {
+    path: "/timesheet",
+    component: <Timesheet />,
+    isHeader: true,
+  },
+  {
+    path: "/timesheetdata",
+    component: <Timesheetdata />,
     isHeader: true,
   },
   {

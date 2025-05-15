@@ -1,68 +1,47 @@
 import { useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
 import api from "api/api";
-import ToastMessage from "utils/mui/toast";
 
-const Logsmodal = ({ onClose }) => {
+const Logmodal = ({ onClose }) => {
   const [client, setClient] = useState("");
   const [task, setTask] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [totalHours, setTotalHours] = useState("00:00");
   const [status, setStatus] = useState("billable");
   const [logDate, setLogDate] = useState(new Date().toISOString().split("T")[0]);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") return;
-    setIsOpen(false);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Convert "HH:MM" into "HH:MM:00.000Z"
+  const [hours, minutes] = totalHours.split(":");
+  const formattedTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:00.000Z`;
+
+  const payload = {
+    log_date: logDate,
+    task,
+    task_description: taskDescription,
+    total_hours: formattedTime,
+    status,
+    client,
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const [hours, minutes] = totalHours.split(":");
-    const formattedTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:00.000Z`;
-
-    const payload = {
-      log_date: logDate,
-      task,
-      task_description: taskDescription,
-      total_hours: formattedTime,
-      status,
-      client,
-    };
-
-    try {
-      const response = await api.post("/worklogs/", payload);
-      if (response.status === 200) {
-        console.log("Log submitted:", response.data);
-        setMessage("✅ Log report has been submitted.");
-        setSeverity("success");
-        setIsOpen(true);
-
-        setTimeout(() => {
-          setLoading(false);
-          onClose();
-        }, 1500);
-      } else {
-        console.error("Unexpected status code:", response.status);
-        setMessage("❌ Failed to submit the log.");
-        setSeverity("error");
-        setIsOpen(true);
-      }
-    } catch (err) {
-      console.error("Submission error:", err);
-      setMessage("❌ Something went wrong while submitting.");
-      setSeverity("error");
-      setIsOpen(true);
-    } finally {
-      setLoading(false);
+  try {
+    const response = await api.post("/worklogs/", payload);
+    if (response.status === 200) {
+      console.log("Log submitted:", response.data);
+     setTimeout(() => {
+        onClose();
+      }, 1500);
+    } else {
+      console.error("Unexpected status code:", response.status);
+      alert(response?.message||"Failed to sumbit the log");
     }
-  };
+  } catch (err) {
+    console.error("Submission error:", err);
+    alert("Something went wrong");
+  }
+};
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 p-4">
@@ -75,7 +54,6 @@ const Logsmodal = ({ onClose }) => {
             <input
               type="date"
               value={logDate}
-              max={new Date().toISOString().split("T")[0]}
               onChange={(e) => setLogDate(e.target.value)}
               className="w-1/2 border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
             />
@@ -125,7 +103,7 @@ const Logsmodal = ({ onClose }) => {
               value={totalHours}
               onChange={(e) => setTotalHours(e.target.value)}
               className="w-1/2 border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
-              step="60"
+              step="60" // allow minute resolution only
             />
           </div>
 
@@ -146,38 +124,21 @@ const Logsmodal = ({ onClose }) => {
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
-              onClick={() => {
-                setMessage("⚠️ You did not submit your log report for today.");
-                setSeverity("warning");
-                setIsOpen(true);
-                setTimeout(() => {
-                  onClose();
-                }, 1500);
-              }}
+              onClick={onClose}
               className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-              disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center min-w-[100px]"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : "Submit"}
+              Submit
             </button>
           </div>
         </form>
       </div>
-      
-      <ToastMessage
-        message={message}
-        severity={severity}
-        open={isOpen}
-        handleClose={handleClose}
-      />
     </div>
   );
 };
-
-export default Logsmodal;
+export default Logmodal;

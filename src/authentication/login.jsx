@@ -90,7 +90,7 @@ isloading(false)
               <div className="flex items-center mb-4 gap-2">
                 <div className="text-2xl font-semibold text-gray-700">Sign In</div>
                 <div className="flex gap-4">
-                  <FontAwesomeIcon
+                  {/* <FontAwesomeIcon
                     icon={faFacebook}
                     size="lg"
                     className="text-blue-600 cursor-pointer"
@@ -101,7 +101,7 @@ isloading(false)
                     size="lg"
                     className="text-blue-400 cursor-pointer"
                     onClick={() => console.log("Twitter login clicked")}
-                  />
+                  /> */}
                 </div>
               </div>
               <div>

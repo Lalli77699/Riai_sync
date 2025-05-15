@@ -24,7 +24,7 @@ const menuItems = [
   { name: "Leave Tracker", icon: <BsFillCalendarCheckFill />, navigation: "/leaverequest" },
   { name: "Leave Request", icon: <MdOutlineRequestPage />, navigation: "/leaveform" },
   { name: "Messenger", icon: <FaComments />, navigation: "/messenger" },
-  { name: "Logsheet", icon: <MdAssignment />, navigation: "/logsheet" },
+  { name: "Timetracker", icon: <MdAssignment />, navigation: "/timetracker" },
   { name: "Expense Tracker", icon: <IoWallet />, navigation: "/expenses" },
   { name: "Calendar", icon: <FaCalendarAlt />, navigation: "/calendar" },
   { name: "Documents", icon: <FaFileAlt />, navigation: "/documents" },
