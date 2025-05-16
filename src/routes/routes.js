@@ -18,12 +18,15 @@ import Timetracker from "Admin/Pages/Timesheets/Timetracker";
 import Timesheet from "Admin/Pages/Timesheets/timesheet";
 import Data from "Admin/Pages/Timesheets/Timesheetdata";
 import Timesheetdata from "Admin/Pages/Timesheets/Timesheetdata";
+import Accesstoken from "Admin/Pages/Accesstoken/Acesstoken";
+import Users from "Admin/Pages/users";
+
 
 
 
 export const routes = [
   {
-    path: "/",
+    path: "/login",
     component: <Login />,
     isHeader: false,
     isSidenav:false
@@ -69,6 +72,16 @@ export const routes = [
   {
     path: "/timesheetdata",
     component: <Timesheetdata />,
+    isHeader: true,
+  },
+  {
+    path: "/",
+    component: < Accesstoken/>,
+    isHeader: false,
+  },
+  {
+    path: "/users",
+    component: < Users/>,
     isHeader: true,
   },
   {

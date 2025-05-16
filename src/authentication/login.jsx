@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,6 +22,9 @@ const Login = () => {
   const [showOTP, setShowOTP] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const location = useLocation();
+  const token = location.state?.token;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -48,6 +51,7 @@ const Login = () => {
       const response = await api.post("/auth/logins", {
         email: email,
         password: password,
+        allow_token: token
       });
       if(response.status==200&&response?.data?.access_token){
           sessionStorage.setItem('auth', response.data.access_token);

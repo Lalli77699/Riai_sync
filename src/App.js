@@ -12,7 +12,7 @@ function Layout() {
   const dispatch=useDispatch();
 
   const navigate = useNavigate()
-  const unrestricted = ["/",'/signup',"/verify"];
+  const unrestricted = ["/",'/signup',"/verify","/login"];
   useEffect(() => {
     const fetchUser = async () => {
       try {

@@ -147,7 +147,7 @@ const Onboardingform = () => {
 
       {!initialLoading && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 mt-20 px-6">
-          <div className="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
+          <div className="w-full max-w-5xl bg-white shadow-lg rounded-2xl p-8">
             <h2 className="text-2xl font-bold text-center mb-6">Employee Onboarding Form</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
