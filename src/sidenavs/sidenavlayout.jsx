@@ -31,7 +31,7 @@ const menuItems = [
   { name: "Documents", icon: <FaFileAlt />, navigation: "/documents" },
   { name: "Contact Us", icon: <FaAddressBook />, navigation: "/contact" },
   { name: "Profile", icon: <FaUser />, navigation: "/Tabs" },
-  { name: "Logout", icon: <FaSignOutAlt />, navigation: "/logout" },
+  { name: "Logout", icon: <FaSignOutAlt />, navigation: "/" },
 ];
 
 
@@ -57,7 +57,7 @@ const SidenavLayout = ({ children }) => {
     if (user.role_id === 1 || user.role_id === 2) {
       return menuItems.filter((item) => item.name === "Home" || item.name === "Onboarding" || item.name === "Project" || item.name ==="Users");
     } else {
-      return menuItems.filter((item) => item.name !== "Onboarding");
+      return menuItems.filter((item) => item.name !== "Onboarding"&&item.name !=="Users");
     }
   }, [user]);
   if (!user) return null;

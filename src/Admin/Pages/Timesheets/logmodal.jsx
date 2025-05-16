@@ -1,47 +1,76 @@
 import { useState } from "react";
 import api from "api/api";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import dayjs from "dayjs";
 
-const Logmodal = ({ onClose }) => {
+const Logmodal = ({ onClose, fetchLogs, weekStart, logsByDate }) => {
   const [client, setClient] = useState("");
   const [task, setTask] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [totalHours, setTotalHours] = useState("00:00");
   const [status, setStatus] = useState("billable");
-  const [logDate, setLogDate] = useState(new Date().toISOString().split("T")[0]);
+  const [logDate, setLogDate] = useState(null);
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!logDate) {
+      alert("Please select a valid date.");
+      return;
+    }
 
-  // Convert "HH:MM" into "HH:MM:00.000Z"
-  const [hours, minutes] = totalHours.split(":");
-  const formattedTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:00.000Z`;
+    const [hours, minutes] = totalHours.split(":");
+    const formattedTime = `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:00.000Z`;
 
-  const payload = {
-    log_date: logDate,
-    task,
-    task_description: taskDescription,
-    total_hours: formattedTime,
-    status,
-    client,
+    const payload = {
+      log_date: dayjs(logDate).format("YYYY-MM-DD"),
+      task,
+      task_description: taskDescription,
+      total_hours: formattedTime,
+      status,
+      client,
+    };
+
+    try {
+      const response = await api.post("/worklogs/", payload);
+      if (response.status === 200) {
+        console.log("Log submitted:", response.data);
+        fetchLogs();
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      } else {
+        console.error("Unexpected status code:", response.status);
+        alert(response?.message || "Failed to submit the log");
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("Something went wrong");
+    }
   };
 
-  try {
-    const response = await api.post("/worklogs/", payload);
-    if (response.status === 200) {
-      console.log("Log submitted:", response.data);
-     setTimeout(() => {
-        onClose();
-      }, 1500);
-    } else {
-      console.error("Unexpected status code:", response.status);
-      alert(response?.message||"Failed to sumbit the log");
-    }
-  } catch (err) {
-    console.error("Submission error:", err);
-    alert("Something went wrong");
-  }
-};
+  // Get valid dates for the week (Mon–Fri) that are not in logsByDate
+  const getValidDates = () => {
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      const current = dayjs(weekStart).add(i, "day");
+      const day = current.day();
+      const isoDate = current.format("YYYY-MM-DD");
 
+      if (day !== 0 && day !== 6 && !(isoDate in logsByDate)) {
+        dates.push(current.toDate());
+      }
+    }
+    return dates;
+  };
+
+  const validDates = getValidDates();
+
+  const isDateSelectable = (date) => {
+    return validDates.some(
+      (d) => dayjs(d).format("YYYY-MM-DD") === dayjs(date).format("YYYY-MM-DD")
+    );
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 p-4">
@@ -51,10 +80,12 @@ const Logmodal = ({ onClose }) => {
           {/* Date Picker */}
           <div>
             <label className="block text-sm font-medium mb-1">Date</label>
-            <input
-              type="date"
-              value={logDate}
-              onChange={(e) => setLogDate(e.target.value)}
+            <DatePicker
+              selected={logDate}
+              onChange={(date) => setLogDate(date)}
+              filterDate={isDateSelectable}
+              dateFormat="yyyy-MM-dd"
+              placeholderText="Select date"
               className="w-1/2 border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -103,7 +134,7 @@ const Logmodal = ({ onClose }) => {
               value={totalHours}
               onChange={(e) => setTotalHours(e.target.value)}
               className="w-1/2 border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
-              step="60" // allow minute resolution only
+              step="60"
             />
           </div>
 
@@ -141,4 +172,5 @@ const Logmodal = ({ onClose }) => {
     </div>
   );
 };
+
 export default Logmodal;

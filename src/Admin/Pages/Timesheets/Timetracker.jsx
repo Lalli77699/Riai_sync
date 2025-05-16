@@ -49,6 +49,7 @@ const Timetracker = () => {
         acc[date].push(log);
         return acc;
       }, {});
+      console.log(grouped)
       setLogsByDate(grouped);
     } catch (error) {
       console.error("Failed to fetch logs:", error);
@@ -338,7 +339,7 @@ const Timetracker = () => {
           to { transform: rotate(360deg); }
         }
       `}</style>
-      {showLogModal && <Logmodal onClose={() => setShowLogModal(false)} />}
+      {showLogModal && <Logmodal logsByDate={logsByDate} weekStart={weekStart} fetchLogs={fetchLogs} onClose={() => setShowLogModal(false)} />}
 
     </div>
   );
